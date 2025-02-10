@@ -84,31 +84,9 @@ def collect_system_specs() -> Dict[str, Any]:
         "os.machine": platform.machine(),
         "python.version": platform.python_version(),
         "hardware.cpus": os.cpu_count(),
-        "hardware.gpus": 0,
-        "libraries.transformers": False,
-        "libraries.torch": False,
-        "libraries.cuda": False,
         "libraries.pytest": sys.modules["pytest"].__version__ if "pytest" in sys.modules.keys() else False,
         "libraries.ipython": sys.modules["ipython"].__version__ if "ipython" in sys.modules.keys() else False,
         "libraries.colab": sys.modules["google.colab"].__version__ if "google.colab" in sys.modules.keys() else False,
     }
 
-    # Try to find out transformer's version
-    try:
-        import transformers
-
-        specs["libraries.transformers"] = transformers.__version__
-    except ImportError:
-        pass
-
-    # Try to find out torch's version and info on potential GPU(s)
-    try:
-        import torch
-
-        specs["libraries.torch"] = torch.__version__
-        if torch.cuda.is_available():
-            specs["libraries.cuda"] = torch.version.cuda
-            specs["libraries.gpus"] = torch.cuda.device_count()
-    except ImportError:
-        pass
     return specs
