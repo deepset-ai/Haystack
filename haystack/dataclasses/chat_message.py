@@ -94,6 +94,7 @@ class ChatMessage:
 
     _role: ChatRole
     _content: Sequence[ChatMessageContentT]
+    _reasoning_content: Optional[str] = None
     _name: Optional[str] = None
     _meta: Dict[str, Any] = field(default_factory=dict, hash=False)
 
@@ -211,6 +212,10 @@ class ChatMessage:
             return tool_call_results[0]
         return None
 
+    @property
+    def reasoning_content(self) -> Optional[str]:
+        return self._reasoning_content
+
     def is_from(self, role: Union[ChatRole, str]) -> bool:
         """
         Check if the message is from a specific role.
@@ -253,6 +258,7 @@ class ChatMessage:
         meta: Optional[Dict[str, Any]] = None,
         name: Optional[str] = None,
         tool_calls: Optional[List[ToolCall]] = None,
+        reasoning_content: Optional[str] = None,
     ) -> "ChatMessage":
         """
         Create a message from the assistant.
@@ -269,7 +275,13 @@ class ChatMessage:
         if tool_calls:
             content.extend(tool_calls)
 
-        return cls(_role=ChatRole.ASSISTANT, _content=content, _meta=meta or {}, _name=name)
+        return cls(
+            _role=ChatRole.ASSISTANT,
+            _content=content,
+            _meta=meta or {},
+            _name=name,
+            _reasoning_content=reasoning_content
+        )
 
     @classmethod
     def from_tool(
@@ -301,6 +313,7 @@ class ChatMessage:
         serialized["_role"] = self._role.value
         serialized["_meta"] = self._meta
         serialized["_name"] = self._name
+        serialized["_reasoning_content"] = self._reasoning_content
         content: List[Dict[str, Any]] = []
         for part in self._content:
             if isinstance(part, TextContent):

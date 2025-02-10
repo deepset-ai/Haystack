@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from dataclasses import dataclass, field
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 
 @dataclass
@@ -18,4 +18,5 @@ class StreamingChunk:
     """
 
     content: str
+    reasoning_content: Optional[str] = None
     meta: Dict[str, Any] = field(default_factory=dict, hash=False)

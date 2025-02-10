@@ -348,6 +348,14 @@ class OpenAIChatGenerator:
         text = "".join([chunk.content for chunk in chunks])
         tool_calls = []
 
+        reasoning_content = None
+        for chunk in chunks:
+            if chunk.reasoning_content is not None:
+                if chunk.reasoning_content is not None:
+                    reasoning_content += chunk.reasoning_content
+                else:
+                    reasoning_content = chunk.reasoning_content
+
         # if it's a tool call , we need to build the payload dict from all the chunks
         if bool(chunks[0].meta.get("tool_calls")):
             tools_len = len(chunks[0].meta.get("tool_calls", []))
@@ -386,7 +394,12 @@ class OpenAIChatGenerator:
             "usage": {},  # we don't have usage data for streaming responses
         }
 
-        return ChatMessage.from_assistant(text=text, tool_calls=tool_calls, meta=meta)
+        return ChatMessage.from_assistant(
+            text=text,
+            tool_calls=tool_calls,
+            reasoning_content=reasoning_content,
+            meta=meta
+        )
 
     def _convert_chat_completion_to_chat_message(self, completion: ChatCompletion, choice: Choice) -> ChatMessage:
         """
@@ -398,6 +411,7 @@ class OpenAIChatGenerator:
         """
         message: ChatCompletionMessage = choice.message
         text = message.content
+        reasoning_content = message.reasoning_content
         tool_calls = []
         if openai_tool_calls := message.tool_calls:
             for openai_tc in openai_tool_calls:
@@ -415,7 +429,7 @@ class OpenAIChatGenerator:
                         _arguments=arguments_str,
                     )
 
-        chat_message = ChatMessage.from_assistant(text=text, tool_calls=tool_calls)
+        chat_message = ChatMessage.from_assistant(text=text, tool_calls=tool_calls, reasoning_content=reasoning_content)
         chat_message._meta.update(
             {
                 "model": completion.model,
@@ -438,7 +452,8 @@ class OpenAIChatGenerator:
         # we stream the content of the chunk if it's not a tool or function call
         choice: ChunkChoice = chunk.choices[0]
         content = choice.delta.content or ""
-        chunk_message = StreamingChunk(content)
+        reasoning_content = choice.delta.reasoning_content
+        chunk_message = StreamingChunk(content, reasoning_content=reasoning_content)
         # but save the tool calls and function call in the meta if they are present
         # and then connect the chunks in the _convert_streaming_chunks_to_chat_message method
         chunk_message.meta.update(
