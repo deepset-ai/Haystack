@@ -3,8 +3,11 @@ loaders:
     search_path: [../../../haystack/evaluation]
     modules:
       [
-        "base",
+        "base_eval_run_result",
         "eval_run_result",
+        "harness.evaluation_harness",
+        "harness.rag.harness",
+        "harness.rag.parameters",
       ]
     ignore_when_discovered: ["__init__"]
 processors:

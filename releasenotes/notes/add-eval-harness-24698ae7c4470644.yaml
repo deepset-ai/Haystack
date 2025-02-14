@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Added a new RAGEvaluationHarness for evaluating RAG pipelines and an EvaluationHarness abstraction, which executes a pipeline with a given set of parameters, inputs and evaluates its outputs with an evaluation pipeline.

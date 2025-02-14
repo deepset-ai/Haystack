@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from haystack.testing.sample_components.accumulate import Accumulate
-from haystack.testing.sample_components.add_value import AddFixedValue
+from haystack.testing.sample_components.add_value import AddFixedValue, AddFixedValueBatch
 from haystack.testing.sample_components.concatenate import Concatenate
-from haystack.testing.sample_components.double import Double
+from haystack.testing.sample_components.double import Double, DoubleBatch
 from haystack.testing.sample_components.fstring import FString
 from haystack.testing.sample_components.greet import Greet
 from haystack.testing.sample_components.hello import Hello
@@ -26,10 +26,12 @@ __all__ = [
     "Accumulate",
     "Threshold",
     "AddFixedValue",
+    "AddFixedValueBatch",
     "Repeat",
     "Sum",
     "Greet",
     "Double",
+    "DoubleBatch",
     "StringJoiner",
     "Hello",
     "TextSplitter",

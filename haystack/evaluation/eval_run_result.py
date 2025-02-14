@@ -9,7 +9,7 @@ from warnings import warn
 from pandas import DataFrame
 from pandas import concat as pd_concat
 
-from .base import BaseEvaluationRunResult
+from .base_eval_run_result import BaseEvaluationRunResult
 
 
 class EvaluationRunResult(BaseEvaluationRunResult):
