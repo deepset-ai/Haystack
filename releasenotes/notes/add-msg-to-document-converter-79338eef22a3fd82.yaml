@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Add a new MSGToDocument component to convert .msg files into Haystack Document objects.
+    - Extracts email metadata (e.g. sender, recipients, CC, BCC, subject) and body content into a Document.
+    - Converts attachments into ByteStream objects which can be passed onto a FileTypeRouter + relevant converters.

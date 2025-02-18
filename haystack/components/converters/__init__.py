@@ -8,6 +8,7 @@ from haystack.components.converters.docx import DOCXToDocument
 from haystack.components.converters.html import HTMLToDocument
 from haystack.components.converters.json import JSONConverter
 from haystack.components.converters.markdown import MarkdownToDocument
+from haystack.components.converters.msg import MSGToDocument
 from haystack.components.converters.openapi_functions import OpenAPIServiceToFunctions
 from haystack.components.converters.output_adapter import OutputAdapter
 from haystack.components.converters.pdfminer import PDFMinerToDocument
@@ -25,6 +26,7 @@ __all__ = [
     "PDFMinerToDocument",
     "HTMLToDocument",
     "MarkdownToDocument",
+    "MSGToDocument",
     "OpenAPIServiceToFunctions",
     "OutputAdapter",
     "DOCXToDocument",

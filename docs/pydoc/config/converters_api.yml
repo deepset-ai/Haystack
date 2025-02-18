@@ -9,6 +9,7 @@ loaders:
         "html",
         "json",
         "markdown",
+        "msg",
         "openapi_functions",
         "output_adapter",
         "pdfminer",

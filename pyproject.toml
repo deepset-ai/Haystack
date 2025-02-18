@@ -112,6 +112,7 @@ extra-dependencies = [
   "jq",                               # JSONConverter
   "openpyxl",                         # XLSXToDocument
   "tabulate",                         # XLSXToDocument
+  "python-oxmsg",                     # MSGToDocument
 
   "nltk>=3.9.1", # NLTKDocumentSplitter
 
