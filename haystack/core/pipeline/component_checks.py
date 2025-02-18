@@ -103,7 +103,7 @@ def any_socket_value_from_predecessor_received(socket_inputs: List[Dict[str, Any
     :param socket_inputs: Inputs for the component's socket.
     """
     # When sender is None, the input was provided from outside the pipeline.
-    return any(inp["value"] != _NO_OUTPUT_PRODUCED and inp["sender"] is not None for inp in socket_inputs)
+    return any(inp["value"] is not _NO_OUTPUT_PRODUCED and inp["sender"] is not None for inp in socket_inputs)
 
 
 def has_user_input(inputs: Dict) -> bool:
@@ -143,7 +143,7 @@ def any_socket_input_received(socket_inputs: List[Dict]) -> bool:
 
     :param socket_inputs: Inputs for the socket.
     """
-    return any(inp["value"] != _NO_OUTPUT_PRODUCED for inp in socket_inputs)
+    return any(inp["value"] is not _NO_OUTPUT_PRODUCED for inp in socket_inputs)
 
 
 def has_lazy_variadic_socket_received_all_inputs(socket: InputSocket, socket_inputs: List[Dict]) -> bool:
@@ -155,7 +155,9 @@ def has_lazy_variadic_socket_received_all_inputs(socket: InputSocket, socket_inp
     """
     expected_senders = set(socket.senders)
     actual_senders = {
-        sock["sender"] for sock in socket_inputs if sock["value"] != _NO_OUTPUT_PRODUCED and sock["sender"] is not None
+        sock["sender"]
+        for sock in socket_inputs
+        if sock["value"] is not _NO_OUTPUT_PRODUCED and sock["sender"] is not None
     }
 
     return expected_senders == actual_senders
@@ -182,7 +184,11 @@ def has_socket_received_all_inputs(socket: InputSocket, socket_inputs: List[Dict
         return False
 
     # The socket is greedy variadic and at least one input was produced, it is complete.
-    if socket.is_variadic and socket.is_greedy and any(sock["value"] != _NO_OUTPUT_PRODUCED for sock in socket_inputs):
+    if (
+        socket.is_variadic
+        and socket.is_greedy
+        and any(sock["value"] is not _NO_OUTPUT_PRODUCED for sock in socket_inputs)
+    ):
         return True
 
     # The socket is lazy variadic and all expected inputs were produced.
@@ -190,7 +196,7 @@ def has_socket_received_all_inputs(socket: InputSocket, socket_inputs: List[Dict
         return True
 
     # The socket is not variadic and the only expected input is complete.
-    return not socket.is_variadic and socket_inputs[0]["value"] != _NO_OUTPUT_PRODUCED
+    return not socket.is_variadic and socket_inputs[0]["value"] is not _NO_OUTPUT_PRODUCED
 
 
 def all_predecessors_executed(component: Dict, inputs: Dict) -> bool:

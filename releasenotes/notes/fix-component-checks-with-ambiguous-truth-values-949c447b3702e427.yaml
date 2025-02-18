@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Pipelines with components that return plain pandas dataframes failed.
+    With this fix, components can return dataframes without issues.

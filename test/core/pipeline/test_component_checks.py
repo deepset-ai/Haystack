@@ -9,6 +9,9 @@ from haystack.core.pipeline.component_checks import _NO_OUTPUT_PRODUCED
 from haystack.core.component.types import InputSocket, OutputSocket, Variadic, GreedyVariadic
 
 
+import pandas as pd
+
+
 @pytest.fixture
 def basic_component():
     """Basic component with one mandatory and one optional input."""
@@ -129,6 +132,26 @@ class TestCanComponentRun:
         """Checks that the component won't run if mandatory inputs are missing."""
         inputs = {"optional_input": [{"sender": "previous_component", "value": "test"}]}
         assert can_component_run(basic_component, inputs) is False
+
+    # We added these tests because a component that returned a pandas dataframe caused the pipeline to fail.
+    # Previously, we compared the value of the socket using '!=' which leads to an error with dataframes.
+    # Instead, we use 'is not' to compare with the sentinel value.
+    def test_sockets_with_ambiguous_truth_value(self, basic_component, greedy_variadic_socket, regular_socket):
+        inputs = {
+            "mandatory_input": [{"sender": "previous_component", "value": pd.DataFrame.from_dict([{"value": 42}])}]
+        }
+
+        assert are_all_sockets_ready(basic_component, inputs, only_check_mandatory=True) is True
+        assert any_socket_value_from_predecessor_received(inputs["mandatory_input"]) is True
+        assert any_socket_input_received(inputs["mandatory_input"]) is True
+        assert (
+            has_lazy_variadic_socket_received_all_inputs(
+                basic_component["input_sockets"]["mandatory_input"], inputs["mandatory_input"]
+            )
+            is True
+        )
+        assert has_socket_received_all_inputs(greedy_variadic_socket, inputs["mandatory_input"]) is True
+        assert has_socket_received_all_inputs(regular_socket, inputs["mandatory_input"]) is True
 
     def test_component_with_no_trigger_but_all_inputs(self, basic_component):
         """
